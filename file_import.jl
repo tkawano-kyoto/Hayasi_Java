@@ -1,4 +1,4 @@
-# ファイルパス（適宜変更してください）
+# ファイルパス
 filename = "data.txt"
 
 # ファイルを開き、各行を読み込む
@@ -28,5 +28,5 @@ open(filename, "r") do file
     data_matrix = [parse.(Int, split(line)) for line in filtered_lines[7:end]]
 
     # 処理の例：データ行列の最初の行を出力
-    println(data_matrix[1])
+    # println(data_matrix[1])
 end
