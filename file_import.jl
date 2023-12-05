@@ -41,5 +41,15 @@ end
 
 # 関数の使用例
 filename = "data.txt" # ファイル名は適宜変更してください
-result = inputData(filename)
-println(result)
+result=(inputData(filename))
+
+data_count = result[1] # n → サンプル数
+qualitative_count = result[2] # m → 定性データ数
+quantitative_count = result[3] # 定量データ数 
+category_counts = result[4] # cate[m] →　 各定性データのカテゴリー数が入ったベクトル
+explanatory_item_count =  result[5] # 実際分析に使用する定性データ数
+explanatory_columns = result[6] # 実際分析に使用する定性データ項目の列番号が入ったベクトル
+external_reference_column = result[7] # 外的基準データが入った列番号
+data_matrix = result[8] # データ行列[n,m+n]
+
+
