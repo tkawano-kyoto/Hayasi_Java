@@ -40,23 +40,23 @@ function inputData(filename)
 end
 
 # 関数の使用例
-filename = "data.txt" # ファイル名は適宜変更
+filename = "data2.txt" # ファイル名は適宜変更
 result=(inputData(filename))
 
-data_count = result[1] # n → サンプル数
-qualitative_count = result[2] # m → 定性データ数
-quantitative_count = result[3] # 定量データ数 
-category_counts = result[4] # cate[m] →　 各定性データのカテゴリー数が入ったベクトル
-explanatory_item_count =  result[5] # 実際分析に使用する定性データ数
-explanatory_columns = result[6] # 実際分析に使用する定性データ項目の列番号が入ったベクトル
-external_reference_column = result[7] # 外的基準データが入った列番号
-data_matrix = result[8] # データ行列[n,m+n]
-#selected_columns_matrix = data_matrix[:, explanatory_columns]
-# submatrix = Array[:, setdiff(1:size(Array, 2), exclude_columns)]
+data_count = result[1] # n → サンプル数。getN()
+qualitative_count = result[2] # m1 → 定性データ数
+quantitative_count = result[3] # n1 → 定量データ数 
+category_counts = result[4] # cate[m1] →　 各定性データのカテゴリー数が入ったベクトル
+explanatory_item_count =  result[5] # mm1 → 実際分析に使用する定性データ数。getM()
+explanatory_columns = result[6] # In_Var[mm1]  →　実際に分析に使う定性データ項目の列番ベクトル
+external_reference_column = result[7] # 外的基準データが入った列番号 #In_Var[mm1+1] 
+data_matrix = result[8] # データ行列[n,m1+n1]
 
 # 除外する列以外の列を選択
-data = hcat(data_matrix...)'
-data_final = data[:,explanatory_columns]
+data = hcat(data_matrix...)'  # ベクトルを行列に。転置が必要。
+data_final = data[:,explanatory_columns] # 実際に分析に供される行列　n x mm1 。getData()
 
-# 結果を表示
-println(data_final)
+# y[n] -> 外的基準値が入ったベクトル　
+y = data[:,external_reference_column] # getY()
+
+
