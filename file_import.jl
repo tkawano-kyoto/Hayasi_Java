@@ -40,7 +40,7 @@ function inputData(filename)
 end
 
 # 関数の使用例
-filename = "data.txt" # ファイル名は適宜変更してください
+filename = "data.txt" # ファイル名は適宜変更
 result=(inputData(filename))
 
 data_count = result[1] # n → サンプル数
@@ -51,5 +51,12 @@ explanatory_item_count =  result[5] # 実際分析に使用する定性データ
 explanatory_columns = result[6] # 実際分析に使用する定性データ項目の列番号が入ったベクトル
 external_reference_column = result[7] # 外的基準データが入った列番号
 data_matrix = result[8] # データ行列[n,m+n]
+#selected_columns_matrix = data_matrix[:, explanatory_columns]
+# submatrix = Array[:, setdiff(1:size(Array, 2), exclude_columns)]
 
+# 除外する列以外の列を選択
+data = hcat(data_matrix...)'
+data_final = data[:,explanatory_columns]
 
+# 結果を表示
+println(data_final)
