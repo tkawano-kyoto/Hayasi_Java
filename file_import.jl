@@ -59,28 +59,29 @@ data_final = data[:,explanatory_columns] # 実際に分析に供される行列�
 # y[n] -> 外的基準値が入ったベクトル　
 y = data[:,external_reference_column] # getY()
 
-function create_cross_tabulation(data_final, catcategory_counts)
-    mm = sum(cates)
+selected_columns = category_counts[explanatory_columns]
+function create_cross_tabulation(data_final, selected_columns)
+    mm = sum(selected_columns)
     cross_tab = zeros(mm, mm)
 
     # 各カテゴリの開始インデックスを計算
     start_indices = [1]
     #for i in 2:axes(cates)
-    for i in 2:length(cates)
-        push!(start_indices, start_indices[end] + cates[i-1])
+    for i in 2:length(selected_columns)
+        push!(start_indices, start_indices[end] + selected_columns[i-1])
     end
 
     # data行列を走査して集計表を更新
-    for row in axes(data, 1)
-        for i in axes(data, 2)
-            for j in axes(data, 2)
+    for row in axes(data_final, 1)
+        for i in axes(data_final, 2)
+            for j in axes(data_final, 2)
                 # インデックス範囲のチェック
-                if data[row, i] > cates[i] || data[row, j] > cates[j]
+                if data_final[row, i] > selected_columns[i] || data_final[row, j] > selected_columns[j]
                     println("エラー: data[$row, $i] または data[$row, $j] がカテゴリ数を超えています。")
                     return
                 end
-                index_i = start_indices[i] + data[row, i] - 1
-                index_j = start_indices[j] + data[row, j] - 1
+                index_i = start_indices[i] + data_final[row, i] - 1
+                index_j = start_indices[j] + data_final[row, j] - 1
                 cross_tab[index_i, index_j] += 1
             end
         end
@@ -89,7 +90,7 @@ function create_cross_tabulation(data_final, catcategory_counts)
     return cross_tab
 end
 
-
+create_cross_tabulation(data_final, selected_columns)
 # for i in 1:data_count
 #     for j in 1:qualitative_count
 #         pk = ll[j]
