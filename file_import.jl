@@ -40,7 +40,7 @@ function inputData(filename)
 end
 
 # 関数の使用例
-filename = "data2.txt" # ファイル名は適宜変更
+filename = "data5.txt" # ファイル名は適宜変更
 result=(inputData(filename))
 
 data_count = result[1] # n → サンプル数。getN()
@@ -91,6 +91,7 @@ function create_cross_tabulation(data_final, selected_columns)
 end
 
 create_cross_tabulation(data_final, selected_columns)
+
 # for i in 1:data_count
 #     for j in 1:qualitative_count
 #         pk = ll[j]
