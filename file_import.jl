@@ -60,6 +60,7 @@ data_final = data[:,explanatory_columns] # 実際に分析に供される行列�
 y = data[:,external_reference_column] # getY()
 
 selected_columns = category_counts[explanatory_columns]
+
 function create_cross_tabulation(data_final, selected_columns)
     mm = sum(selected_columns)
     cross_tab = zeros(mm, mm)
@@ -92,10 +93,24 @@ end
 
 create_cross_tabulation(data_final, selected_columns)
 
-# for i in 1:data_count
-#     for j in 1:qualitative_count
-#         pk = ll[j]
-#         k = data[i, j]
-#         y[k + pk] += y_data[i]
+
+# function aggregate_category_data(data_final, y, selected_columns)
+#     total_categories = sum(selected_columns)
+#     category_sums = zeros(Int, total_categories)
+
+#     for i in axes(data_final, 1)
+#         for j in axes(data_final, 2)
+#             # 現在の列の開始インデックスを計算
+#             start_index = sum(selected_columns[1:j-1]) + 1
+#             # カテゴリーインデックスを計算
+#             category_index = start_index + data_final[i, j]
+#             # category_sumsへの加算
+#             category_sums[category_index] += y[i]
+#         end
 #     end
+
+#     return category_sums
 # end
+
+
+# aggregate_category_data(data_final, y, selected_columns)
