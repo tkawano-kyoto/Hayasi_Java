@@ -94,23 +94,23 @@ end
 create_cross_tabulation(data_final, selected_columns)
 
 
-# function aggregate_category_data(data_final, y, selected_columns)
-#     total_categories = sum(selected_columns)
-#     category_sums = zeros(Int, total_categories)
+function aggregate_category_data(data_final, y, selected_columns)
+    total_categories = sum(selected_columns)
+    category_sums = zeros(Int, total_categories)
 
-#     for i in axes(data_final, 1)
-#         for j in axes(data_final, 2)
-#             # 現在の列の開始インデックスを計算
-#             start_index = sum(selected_columns[1:j-1]) + 1
-#             # カテゴリーインデックスを計算
-#             category_index = start_index + data_final[i, j]
-#             # category_sumsへの加算
-#             category_sums[category_index] += y[i]
-#         end
-#     end
+    for i in axes(data_final, 1)
+        for j in axes(data_final, 2)
+            # 現在の列の開始インデックスを計算
+            start_index = sum(selected_columns[1:j-1]) + 1
+            # カテゴリーインデックスを計算
+            category_index = start_index + data_final[i, j]
+            # category_sumsへの加算
+            category_sums[category_index] += y[i]
+        end
+    end
 
-#     return category_sums
-# end
+    return category_sums
+end
 
 
 # aggregate_category_data(data_final, y, selected_columns)
