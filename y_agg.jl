@@ -1,30 +1,46 @@
-function aggregate_category_data(data, y_data, ll)
-    category_sums = Dict{String, Int}()
+function aggregate_category_data(data, y_data, selected_columns)
+    total_categories = sum(selected_columns)
+    category_sums = zeros(Int, total_categories)
 
-    for i in 1:axes(data, 1)
-        for j in 1:axes(data, 2)
-            key = "Category $(j)-$(data[i, j])"
-            category_sums[key] = get(category_sums, key, 0) + y_data[i]
+    for i in axes(data, 1)
+        for j in axes(data, 2)
+            # 現在の列の開始インデックスを計算
+            start_index = sum(selected_columns[1:j-1]) # + 1
+            # カテゴリーインデックスを計算
+            category_index = start_index + data[i, j]
+            # category_sumsへの加算
+            category_sums[category_index] += y_data[i]
         end
     end
 
-    for i in 1:length(ll)
-        for j in 0:(ll[i] - 1)
-            key = "Category $(i)-$(j)"
-            println("$key: ", get(category_sums, key, 0))
-        end
-    end
+    return category_sums
 end
 
-# 仮のデータセット
-data = [
-    0 1 2;
-    1 0 1;
-    0 2 1
-    # 他の症例データ...
-]
 
-y_data = [10, 20, 30] # 他の y_data の値...
-ll = [2, 3, 3] # 各カテゴリの数
+# 仮のデータセット
+data=[
+    1 1 1 2 1
+    1 3 2 1 2
+    2 1 1 1 1
+    3 4 2 2 2
+    1 4 1 1 1
+    2 3 2 2 2
+    2 1 1 1 1
+    1 3 1 2 2
+    3 2 2 2 3
+    1 1 2 1 2
+    3 1 1 1 3
+    2 3 1 2 1
+    2 1 2 2 2
+    1 3 2 2 1
+    3 2 1 1 3
+    2 4 1 1 3
+    1 2 2 1 1
+    2 1 2 1 3
+    3 1 1 2 1
+    2 2 1 1 2]
+
+y_data = [2,1,5,6,3,2,6,3,5,2,10,4,3,1,9,10,3,4,6,6] # 他の y_data の値...
+ll = [3,4,2,2,3] # 各カテゴリの数
 
 aggregate_category_data(data, y_data, ll)

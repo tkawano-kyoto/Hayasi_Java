@@ -101,7 +101,7 @@ function aggregate_category_data(data_final, y, selected_columns)
     for i in axes(data_final, 1)
         for j in axes(data_final, 2)
             # 現在の列の開始インデックスを計算
-            start_index = sum(selected_columns[1:j-1]) + 1
+            start_index = sum(selected_columns[1:j-1]) # + 1
             # カテゴリーインデックスを計算
             category_index = start_index + data_final[i, j]
             # category_sumsへの加算
@@ -113,4 +113,4 @@ function aggregate_category_data(data_final, y, selected_columns)
 end
 
 
-# aggregate_category_data(data_final, y, selected_columns)
+aggregate_category_data(data_final, y, selected_columns)
