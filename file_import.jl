@@ -114,3 +114,5 @@ end
 
 
 aggregate_category_data(data_final, y, selected_columns)
+
+#2024/6/15 T.Kawano
