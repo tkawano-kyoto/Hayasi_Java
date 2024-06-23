@@ -116,3 +116,21 @@ end
 aggregate_category_data(data_final, y, selected_columns)
 
 #2024/6/15 T.Kawano
+
+# function solve_linear_equation(A, Y)
+#     try
+#         X = A \ Y
+#     catch e
+#         println("Error solving the equation: ", e)
+#         return nothing
+#     end
+    
+#     return X
+# end
+
+# if X != nothing
+#     println("Solution: ", X)
+#     x = X[:] # Xを1次元配列に変換
+#     println("x array: ", x)
+# end
+
