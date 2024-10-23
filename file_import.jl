@@ -41,23 +41,23 @@ end
 
 # 関数の使用例
 filename = "data5.txt" # ファイル名は適宜変更
-result=(inputData(filename))
+result = (inputData(filename))
 
 data_count = result[1] # n → サンプル数。getN()
 qualitative_count = result[2] # m1 → 定性データ数
 quantitative_count = result[3] # n1 → 定量データ数 
 category_counts = result[4] # cate[m1] →　 各定性データのカテゴリー数が入ったベクトル
-explanatory_item_count =  result[5] # mm1 → 実際分析に使用する定性データ数。getM()
+explanatory_item_count = result[5] # mm1 → 実際分析に使用する定性データ数。getM()
 explanatory_columns = result[6] # In_Var[mm1]  →　実際に分析に使う定性データ項目の列番ベクトル
 external_reference_column = result[7] # 外的基準データが入った列番号 #In_Var[mm1+1] 
 data_matrix = result[8] # データ行列[n,m1+n1]
 
 # 除外する列以外の列を選択
 data = hcat(data_matrix...)'  # ベクトルを行列に。転置が必要。
-data_final = data[:,explanatory_columns] # 実際に分析に供される行列　n x mm1 。getData()
+data_final = data[:, explanatory_columns] # 実際に分析に供される行列　n x mm1 。getData()
 
 # y[n] -> 外的基準値が入ったベクトル　
-y = data[:,external_reference_column] # getY()
+y = data[:, external_reference_column] # getY()
 
 selected_columns = category_counts[explanatory_columns]
 
@@ -91,7 +91,7 @@ function create_cross_tabulation(data_final, selected_columns)
     return cross_tab
 end
 
-create_cross_tabulation(data_final, selected_columns)
+A = create_cross_tabulation(data_final, selected_columns)
 
 
 function aggregate_category_data(data_final, y, selected_columns)
@@ -101,7 +101,7 @@ function aggregate_category_data(data_final, y, selected_columns)
     for i in axes(data_final, 1)
         for j in axes(data_final, 2)
             # 現在の列の開始インデックスを計算
-            start_index = sum(selected_columns[1:j-1]) 
+            start_index = sum(selected_columns[1:j-1])
             # カテゴリーインデックスを計算
             category_index = start_index + data_final[i, j]
             # category_sumsへの加算
@@ -112,25 +112,22 @@ function aggregate_category_data(data_final, y, selected_columns)
     return category_sums
 end
 
+Y = aggregate_category_data(data_final, y, selected_columns)
 
-aggregate_category_data(data_final, y, selected_columns)
 
 #2024/6/15 T.Kawano
 
-# function solve_linear_equation(A, Y)
-#     try
-#         X = A \ Y
-#     catch e
-#         println("Error solving the equation: ", e)
-#         return nothing
-#     end
-    
-#     return X
-# end
+using LinearAlgebra
 
-# if X != nothing
-#     println("Solution: ", X)
-#     x = X[:] # Xを1次元配列に変換
-#     println("x array: ", x)
-# end
+function solve_linear_equation(A, Y)
+    try
+        X = A \ Y
+        return X
+    catch e
+        println("Error solving the equation: ", e)
+        return nothing
+    end
 
+end
+
+x = solve_linear_equation(A, Y)
