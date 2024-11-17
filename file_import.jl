@@ -70,7 +70,7 @@ function create_cross_tabulation(data_final, selected_columns)
     # 各カテゴリの開始インデックスを計算
     start_indices = [1]
     #for i in 2:axes(cates)
-    for i = 2:length(selected_columns)
+    for i ∈ 2:length(selected_columns)
         push!(start_indices, start_indices[end] + selected_columns[i-1])
     end
 
@@ -122,11 +122,11 @@ println(Y)
 println(selected_columns)
 
 
-function get_numeric_value(exp, ext, cateno)
+function get_numeric_value(exp, ext, cateno, selected_columns)
 
     # 初期化
-    v1 = Float64[]  # Double型のVectorを表現
-    v = Float64[]   # Double型のVectorを表現
+    v1 = Float64[]  # Double型のVector
+    v = Float64[]   # Double型のVector
     k1 = 0
     k2 = 0
     l1 = 0
@@ -138,11 +138,11 @@ function get_numeric_value(exp, ext, cateno)
     ll = zeros(Int, m + 1)
 
     # ll の値を計算して更新
-    for i = 1:m
+    for i in 1:m
         ll[i+1] = ll[i] + selected_columns[i]
     end
 
-    for jj = 1:m
+    for jj in 1:m
         if jj == 1
             l1 = ll[jj]
             l2 = ll[jj+1]
@@ -151,10 +151,10 @@ function get_numeric_value(exp, ext, cateno)
             l2 = ll[jj+1]
         end
 
-        for i = l1:l2-1
-            push!(v1, y[i])  # y[i]をv1に追加
+        for i in l1:(l2-1)
+            push!(v1, ext[i])  # y[i]をv1に追加
 
-            for ii = 1:m
+            for ii in 1:m
                 if ii == 1
                     k1 = ll[ii]
                     k2 = ll[ii+1]
@@ -163,17 +163,19 @@ function get_numeric_value(exp, ext, cateno)
                     k2 = ll[ii+1]
                 end
 
-                for j = k1:k2-1
-                    push!(v, crossTab[i, j])  # crossTab[i][j]をvに追加
+                for j in k1:(k2-1)
+                    push!(v, exp[i, j])  # crossTab[i][j]をvに追加
                 end
             end
         end
     end
-
+    # 必要な値を返す（例として v と v1 を返す）
+    return v1, v
 end
+n
 
-
-val = get_numeric_value(A, Y, explanatory_item_count)
+# 関数呼び出し
+v1, v = get_numeric_value(A, Y, explanatory_item_count, selected_columns)
 
 
 
