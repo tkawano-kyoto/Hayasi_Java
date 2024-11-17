@@ -34,7 +34,7 @@ function inputData(filename)
             explanatory_item_count,
             explanatory_columns,
             external_reference_column,
-            data_matrix
+            data_matrix,
         )
     end
 end
@@ -52,6 +52,8 @@ explanatory_columns = result[6] # In_Var[mm1]  →　実際に分析に使う定
 external_reference_column = result[7] # 外的基準データが入った列番号 #In_Var[mm1+1] 
 data_matrix = result[8] # データ行列[n,m1+n1]
 
+
+
 # 除外する列以外の列を選択
 data = hcat(data_matrix...)'  # ベクトルを行列に。転置が必要。
 data_final = data[:, explanatory_columns] # 実際に分析に供される行列　n x mm1 。getData()
@@ -68,7 +70,7 @@ function create_cross_tabulation(data_final, selected_columns)
     # 各カテゴリの開始インデックスを計算
     start_indices = [1]
     #for i in 2:axes(cates)
-    for i in 2:length(selected_columns)
+    for i = 2:length(selected_columns)
         push!(start_indices, start_indices[end] + selected_columns[i-1])
     end
 
@@ -77,7 +79,8 @@ function create_cross_tabulation(data_final, selected_columns)
         for i in axes(data_final, 2)
             for j in axes(data_final, 2)
                 # インデックス範囲のチェック
-                if data_final[row, i] > selected_columns[i] || data_final[row, j] > selected_columns[j]
+                if data_final[row, i] > selected_columns[i] ||
+                   data_final[row, j] > selected_columns[j]
                     println("エラー: data[$row, $i] または data[$row, $j] がカテゴリ数を超えています。")
                     return
                 end
@@ -114,20 +117,79 @@ end
 
 Y = aggregate_category_data(data_final, y, selected_columns)
 
+println(A)
+println(Y)
+println(selected_columns)
 
-#2024/6/15 T.Kawano
 
-using LinearAlgebra
+function get_numeric_value(exp, ext, cateno)
 
-function solve_linear_equation(A, Y)
-    try
-        X = A \ Y
-        return X
-    catch e
-        println("Error solving the equation: ", e)
-        return nothing
+    # 初期化
+    v1 = Float64[]  # Double型のVectorを表現
+    v = Float64[]   # Double型のVectorを表現
+    k1 = 0
+    k2 = 0
+    l1 = 0
+    l2 = 0
+
+    m = cateno
+
+    # ll を初期化 (長さは m+1)
+    ll = zeros(Int, m + 1)
+
+    # ll の値を計算して更新
+    for i = 1:m
+        ll[i+1] = ll[i] + selected_columns[i]
+    end
+
+    for jj = 1:m
+        if jj == 1
+            l1 = ll[jj]
+            l2 = ll[jj+1]
+        else
+            l1 = ll[jj] + 1
+            l2 = ll[jj+1]
+        end
+
+        for i = l1:l2-1
+            push!(v1, y[i])  # y[i]をv1に追加
+
+            for ii = 1:m
+                if ii == 1
+                    k1 = ll[ii]
+                    k2 = ll[ii+1]
+                else
+                    k1 = ll[ii] + 1
+                    k2 = ll[ii+1]
+                end
+
+                for j = k1:k2-1
+                    push!(v, crossTab[i, j])  # crossTab[i][j]をvに追加
+                end
+            end
+        end
     end
 
 end
 
-x = solve_linear_equation(A, Y)
+
+val = get_numeric_value(A, Y, explanatory_item_count)
+
+
+
+#2024/6/15 T.Kawano
+
+# using LinearAlgebra
+
+# function solve_linear_equation(A, Y)
+#     try
+#         X = A \ Y
+#         return X
+#     catch e
+#         println("Error solving the equation: ", e)
+#         return nothing
+#     end
+
+# end
+
+# x = solve_linear_equation(A, Y)
