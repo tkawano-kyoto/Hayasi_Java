@@ -119,7 +119,8 @@ Y = aggregate_category_data(data_final, y, selected_columns)
 
 println(A)
 println(Y)
-println(selected_columns)
+println("selected_columns", selected_columns)
+println("explanatory_item_count ", explanatory_item_count)
 
 
 function get_numeric_value(exp, ext, cateno, selected_columns)
@@ -137,42 +138,46 @@ function get_numeric_value(exp, ext, cateno, selected_columns)
     # ll を初期化 (長さは m+1)
     ll = zeros(Int, m + 1)
 
-    # ll の値を計算して更新
+    # ll の値を計算して更新 (インデックスが1以上であることを確認)
+
     for i in 1:m
         ll[i+1] = ll[i] + selected_columns[i]
     end
+    println("ll: ", ll)
 
     for jj in 1:m
         if jj == 1
-            l1 = ll[jj]
+            l1 = 1
             l2 = ll[jj+1]
         else
             l1 = ll[jj] + 1
             l2 = ll[jj+1]
         end
 
-        for i in l1:(l2-1)
-            push!(v1, ext[i])  # y[i]をv1に追加
+        println("l1  ", l1)
+        println("l2  ", l2)
 
-            for ii in 1:m
-                if ii == 1
-                    k1 = ll[ii]
-                    k2 = ll[ii+1]
-                else
-                    k1 = ll[ii] + 1
-                    k2 = ll[ii+1]
-                end
+        # for i in l1:(l2-1)
+        #     push!(v1, ext[i])  # y[i]をv1に追加
 
-                for j in k1:(k2-1)
-                    push!(v, exp[i, j])  # crossTab[i][j]をvに追加
-                end
-            end
-        end
+        #     for ii in 1:m
+        #         if ii == 1
+        #             k1 = ll[ii]
+        #             k2 = ll[ii+1]
+        #         else
+        #             k1 = ll[ii] + 1
+        #             k2 = ll[ii+1]
+        #         end
+
+        #         for j in k1:(k2-1)
+        #             push!(v, exp[i, j])  # crossTab[i][j]をvに追加
+        #         end
+        #     end
+        # end
     end
     # 必要な値を返す（例として v と v1 を返す）
     return v1, v
 end
-n
 
 # 関数呼び出し
 v1, v = get_numeric_value(A, Y, explanatory_item_count, selected_columns)
