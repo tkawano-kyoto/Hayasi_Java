@@ -132,14 +132,14 @@ function get_numeric_value(exp, ext)
     yy = zeros(mm - m + 1)
 
     # dt と var に値をコピー
-    for i in 1:length(v)
+    for i = 1:length(v)
         push!(dt, v[i])
         push!(var, dt[i])
     end
 
     # dt1 と yy に値をコピー
     dt1 = Float64[]
-    for i in 1:length(v1)
+    for i = 1:length(v1)
         push!(dt1, v1[i])
         yy[i] = dt1[i]
     end
@@ -152,15 +152,15 @@ function get_numeric_value(exp, ext)
 
     # matA の構築
     matA = zeros(Complex{Float64}, mm - m + 1, mm - m + 1)
-    for i in 1:(mm-m+1)
-        for j in 1:(mm-m+1)
+    for i = 1:(mm-m+1)
+        for j = 1:(mm-m+1)
             matA[i, j] = Complex(var[i+(j-1)*(mm-m+1)], 0.0)
         end
     end
 
     # matY の構築
     matY = zeros(Complex{Float64}, mm - m + 1, 1)
-    for i in 1:(mm-m+1)
+    for i = 1:(mm-m+1)
         matY[i, 1] = Complex(yy[i], 0.0)
     end
 
@@ -174,7 +174,7 @@ function get_numeric_value(exp, ext)
 
     # 実数部分の抽出
     m_x = real.(matX)
-    for i in 1:(mm-m+1)
+    for i = 1:(mm-m+1)
         x[i] = m_x[i, 1]
     end
 end
