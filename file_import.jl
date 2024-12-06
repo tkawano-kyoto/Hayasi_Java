@@ -40,7 +40,7 @@ function inputData(filename)
 end
 
 # 関数の使用例
-filename = "data5.txt" # ファイル名は適宜変更
+filename = "data.txt" # ファイル名は適宜変更
 result = (inputData(filename))
 
 data_count = result[1] # n → サンプル数。getN()
@@ -117,78 +117,83 @@ end
 
 Y = aggregate_category_data(data_final, y, selected_columns)
 
-println(A)
-println(Y)
-println("selected_columns", selected_columns)
-println("explanatory_item_count ", explanatory_item_count)
+function get_numeric_value(exp, ext)
+    using LinearAlgebra
 
-
-function get_numeric_value(exp, ext, cateno, selected_columns)
+    # 引数
+    v = A   # mm × mm の要素を持つ配列 (与えられるデータに置き換えてください)
+    v1 = Y  # mm 要素のベクトル (与えられるデータに置き換えてください)
+    m = explanatory_item_count   # 説明変数の数
+    mm = length(Y)  # 総カテゴリー数
 
     # 初期化
-    v1 = Float64[]  # Double型のVector
-    v = Float64[]   # Double型のVector
-    k1 = 0
-    k2 = 0
-    l1 = 0
-    l2 = 0
+    dt = Float64[]
+    var = Float64[]
+    yy = zeros(mm - m + 1)
 
-    m = cateno
-
-    # ll を初期化 (長さは m+1)
-    ll = zeros(Int, m + 1)
-
-    # ll の値を計算して更新 (インデックスが1以上であることを確認)
-
-    for i in 1:m
-        ll[i+1] = ll[i] + selected_columns[i]
+    # dt と var に値をコピー
+    for i in 1:length(v)
+        push!(dt, v[i])
+        push!(var, dt[i])
     end
-    println("ll: ", ll)
 
-    for jj in 1:m
-        if jj == 1
-            l1 = 1
-            l2 = ll[jj+1]
-        else
-            l1 = ll[jj] + 1
-            l2 = ll[jj+1]
+    # dt1 と yy に値をコピー
+    dt1 = Float64[]
+    for i in 1:length(v1)
+        push!(dt1, v1[i])
+        yy[i] = dt1[i]
+    end
+
+    # 必要な配列の初期化
+    x = zeros(mm - m + 1)
+    xx = zeros(mm)
+    numericValue = zeros(mm)
+    temp = zeros(m)
+
+    # matA の構築
+    matA = zeros(Complex{Float64}, mm - m + 1, mm - m + 1)
+    for i in 1:(mm-m+1)
+        for j in 1:(mm-m+1)
+            matA[i, j] = Complex(var[i+(j-1)*(mm-m+1)], 0.0)
         end
-
-        println("l1  ", l1)
-        println("l2  ", l2)
-
-        # for i in l1:(l2-1)
-        #     push!(v1, ext[i])  # y[i]をv1に追加
-
-        #     for ii in 1:m
-        #         if ii == 1
-        #             k1 = ll[ii]
-        #             k2 = ll[ii+1]
-        #         else
-        #             k1 = ll[ii] + 1
-        #             k2 = ll[ii+1]
-        #         end
-
-        #         for j in k1:(k2-1)
-        #             push!(v, exp[i, j])  # crossTab[i][j]をvに追加
-        #         end
-        #     end
-        # end
     end
-    # 必要な値を返す（例として v と v1 を返す）
-    return v1, v
+
+    # matY の構築
+    matY = zeros(Complex{Float64}, mm - m + 1, 1)
+    for i in 1:(mm-m+1)
+        matY[i, 1] = Complex(yy[i], 0.0)
+    end
+
+    # matX の計算
+    matX = zeros(Complex{Float64}, mm - m + 1, mm - m + 1)
+    try
+        matX = matA \ matY  # matA の逆行列と matY を掛ける
+    catch e
+        println("Error in matrix operation: ", e)
+    end
+
+    # 実数部分の抽出
+    m_x = real.(matX)
+    for i in 1:(mm-m+1)
+        x[i] = m_x[i, 1]
+    end
 end
 
 # 関数呼び出し
-v1, v = get_numeric_value(A, Y, explanatory_item_count, selected_columns)
+# v1, v = get_numeric_value(A, Y, explanatory_item_count, selected_columns)
 
-
+# println("size of V1 ",size(v1))
+# println(v1)
+# println("size of v ",size(v))
+# println(v)
 
 #2024/6/15 T.Kawano
 
-# using LinearAlgebra
+using LinearAlgebra
 
 # function solve_linear_equation(A, Y)
+#     println("size of A ",size(A))
+#     println("size of Y ",size(Y))
 #     try
 #         X = A \ Y
 #         return X
